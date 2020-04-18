@@ -14,7 +14,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class FeedbackRequestSummaryModel {
     private UUID id;
-    private String reviewer;
+    private EmployeePublicDataModel reviewer;
+    private EmployeePublicDataModel reviewee;
     private Date dueOn;
     private Date submittedOn;
     private String templateName;

@@ -40,7 +40,9 @@ public class FeedbackRequestService {
     }
 
     public FeedbackRequestEntity getFeedbackRequest(UUID feedbackRequestId, Token token) {
-        if (!token.isAdmin()) {
+        FeedbackRequestEntity entity = feedbackRequestDao.findById(feedbackRequestId).orElseThrow();
+
+        if (!token.isAdmin() && !entity.getReviewer().getId().equals(token.getEmployeeId())) {
             throw new NotAuthorizedException(ErrorCode.AUTHORIZATION_INVALID_OR_EXPIRED_TOKEN);
         }
 
@@ -111,9 +113,15 @@ public class FeedbackRequestService {
             responsesToSave.add(response);
         });
 
-        responsesToSave.forEach(r -> feedbackResponseDao.save(r));
+        responsesToSave.forEach(r -> {
+            feedbackResponseDao.save(r);
+            feedbackRequestEntity.getReviewFeedback().add(r);
+        });
 
-        return feedbackRequestEntity;
+        feedbackRequestDao.save(feedbackRequestEntity);
+
+        // reload to pickup new feedback responses
+        return feedbackRequestDao.findById(feedbackRequestId).orElseThrow();
     }
 
     public FeedbackRequestEntity updateFeedbackRequestDueOn(UUID feedbackRequestId, Date dueOn) {

@@ -34,6 +34,13 @@ public class EmployeeEntity {
     )
     private CredentialEntity credential;
 
+    @OneToMany(
+            mappedBy = "reviewer",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<FeedbackRequestEntity> feedbackRequests = new HashSet<>();
+
     private String firstName;
     private String lastName;
 

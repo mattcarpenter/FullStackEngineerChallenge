@@ -11,11 +11,16 @@ import java.util.stream.Collectors;
 public class EntityToModelMapper {
 
     public static EmployeeModel mapToEmployeeModel(EmployeeEntity entity) {
+        List<FeedbackRequestSummaryModel> feedbackRequests = entity.getFeedbackRequests().stream()
+                .map(EntityToModelMapper::mapToFeedbackRequestSummaryModel)
+                .collect(Collectors.toList());
+
         return EmployeeModel.builder()
                 .firstName(entity.getFirstName())
                 .lastName(entity.getLastName())
                 .emailAddress(entity.getEmailAddress())
                 .id(entity.getId())
+                .feedbackRequests(feedbackRequests)
                 .build();
     }
 
@@ -35,12 +40,14 @@ public class EntityToModelMapper {
 
     public static FeedbackRequestSummaryModel mapToFeedbackRequestSummaryModel(FeedbackRequestEntity feedbackRequestEntity) {
         EmployeeEntity reviewer = feedbackRequestEntity.getReviewer();
+        EmployeeEntity reviewee = feedbackRequestEntity.getPerformanceReview().getRevieweeEmployee();
 
         return FeedbackRequestSummaryModel.builder()
                 .dueOn(feedbackRequestEntity.getDueOn())
                 .submittedOn(feedbackRequestEntity.getSubmittedOn())
                 .id(feedbackRequestEntity.getId())
-                .reviewer(reviewer.getFirstName() + " " + reviewer.getLastName())
+                .reviewer(EntityToModelMapper.mapToEmployeePublicDataModel(reviewer))
+                .reviewee(EntityToModelMapper.mapToEmployeePublicDataModel(reviewee))
                 .templateName(feedbackRequestEntity.getTemplate().getName())
                 .build();
     }

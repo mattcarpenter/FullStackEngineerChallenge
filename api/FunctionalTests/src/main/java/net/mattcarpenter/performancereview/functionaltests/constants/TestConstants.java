@@ -15,6 +15,8 @@ public class TestConstants {
     public static final String V1_GET_PERFORMANCE_REVIEW = "/api/v1/performance-reviews/%s";
     public static final String V1_DELETE_FEEDBACK_REQUEST = "/api/v1/feedback-requests/%s";
     public static final String V1_GET_FEEDBACK_REQUEST = "/api/v1/feedback-requests/%s";
+    public static final String V1_SUBMIT_FEEDBACK_REQUEST = "/api/v1/feedback-requests/%s/submit";
+    public static final String V1_UPDATE_FEEDBACK_REQUEST = "/api/v1/feedback-requests/%s";
 
 
     /* error codes */

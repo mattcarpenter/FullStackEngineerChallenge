@@ -2,18 +2,18 @@ package net.mattcarpenter.performancereview.functionaltests.helpers;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.internal.TestSpecificationImpl;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import net.mattcarpenter.performancereview.constants.Constants;
 import net.mattcarpenter.performancereview.functionaltests.constants.TestConstants;
 import net.mattcarpenter.performancereview.functionaltests.utils.TestUtils;
-import net.mattcarpenter.performancereview.model.CreateFeedbackRequestRequest;
-import net.mattcarpenter.performancereview.model.CreatePerformanceReviewRequest;
-import net.mattcarpenter.performancereview.model.TemplateFieldModel;
-import net.mattcarpenter.performancereview.model.TemplateModel;
+import net.mattcarpenter.performancereview.model.*;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class PerformanceReviewHelper {
@@ -62,6 +62,14 @@ public class PerformanceReviewHelper {
         return request.get(TestUtils.makePath(TestConstants.V1_GET_PERFORMANCE_REVIEW, performanceReviewId.toString()));
     }
 
+    public static Response getFeedbackRequestDetails(UUID feedbackRequestId, String token) {
+        RequestSpecification request = RestAssured.given();
+        if (StringUtils.isNotEmpty(token)) {
+            request.cookie(Constants.TOKEN_COOKIE_NAME, token);
+        }
+        return request.get(TestUtils.makePath(TestConstants.V1_GET_FEEDBACK_REQUEST, feedbackRequestId.toString()));
+    }
+
     public static UUID createFeedbackTemplate(String name) {
         TemplateModel template = new TemplateModel(name);
         RequestSpecification request = RestAssured.given();
@@ -75,5 +83,26 @@ public class PerformanceReviewHelper {
         request.body(field);
         request.contentType(ContentType.JSON);
         request.post(TestUtils.makePath(TestConstants.V1_CREATE_TEMPLATE_FIELD));
+    }
+
+    public static Response submitFeedbackRequest(UUID feedbackRequestId, String token) {
+        RequestSpecification request = RestAssured.given();
+        if (StringUtils.isNotEmpty(token)) {
+            request.cookie(Constants.TOKEN_COOKIE_NAME, token);
+        }
+        return request.post(TestUtils.makePath(TestConstants.V1_SUBMIT_FEEDBACK_REQUEST, feedbackRequestId.toString()));
+    }
+
+    public static Response updateFeedbackResponseQuestions(UUID feedbackRequestId, List<QuestionModel> questions, String token) {
+        UpdateFeedbackRequestRequest requestBody = UpdateFeedbackRequestRequest.builder()
+                .questions(questions)
+                .build();
+        RequestSpecification request = RestAssured.given();
+        request.body(requestBody);
+        request.contentType(ContentType.JSON);
+        if (StringUtils.isNotEmpty(token)) {
+            request.cookie(Constants.TOKEN_COOKIE_NAME, token);
+        }
+        return request.post(TestUtils.makePath(TestConstants.V1_UPDATE_FEEDBACK_REQUEST, feedbackRequestId.toString()));
     }
 }

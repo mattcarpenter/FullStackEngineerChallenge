@@ -19,12 +19,12 @@ public class FeedbackRequestEntity {
     @Type(type = "pg-uuid")
     private UUID id = UUID.randomUUID();
 
-    @OneToOne
+    @ManyToOne
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private EmployeeEntity reviewer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private PerformanceReviewEntity performanceReview;

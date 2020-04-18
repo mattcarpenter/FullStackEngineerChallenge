@@ -61,13 +61,14 @@ public class AuthService {
         // locate employee record
         EmployeeEntity employee = employeeDao.findByEmailAddress(emailAddress);
         if (employee == null) {
+            // exception handler filter will translate this to a more generic error code prior to responding to the client
             throw new NotAuthorizedException(ErrorCode.AUTHORIZATION_INVALID_EMAIL);
         }
 
         // validate password
         try {
             if (!Crypto.validatePassword(password, EntityToModelMapper.mapToCredentialModel(employee.getCredential()))) {
-                // global exception handler will translate this to a more generic error code before returning to the client
+                // exception handler filter will translate this to a more generic error code before returning to the client
                 throw new NotAuthorizedException(ErrorCode.AUTHORIZATION_INVALID_PASSWORD);
             }
         } catch (GeneralSecurityException gsx) {
