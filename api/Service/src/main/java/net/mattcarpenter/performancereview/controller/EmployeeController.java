@@ -49,15 +49,17 @@ public class EmployeeController {
 
     @PostMapping(value = "/{employeeId:.+}")
     public EmployeeModel updateEmployee(@PathVariable UUID employeeId, @RequestBody UpdateEmployeeRequest request) {
+        Token token = authService.loadTokenFromSecurityContext();
         EmployeeEntity entity = employeeService.updateEmployee(employeeId, request.getFirstName(), request.getLastName(),
-                request.getEmailAddress());
+                request.getEmailAddress(), token);
         return EntityToModelMapper.mapToEmployeeModel(entity);
     }
 
     @PostMapping
     public EmployeeModel createEmployee(@RequestBody @Valid CreateEmployeeRequest request) {
+        Token token = authService.loadTokenFromSecurityContext();
         EmployeeEntity entity =  employeeService.createEmployee(request.getFirstName(), request.getLastName(), request.getEmailAddress(),
-                request.getPassword());
+                request.getPassword(), request.isAdmin(), token);
         return EntityToModelMapper.mapToEmployeeModel(entity);
     }
 }

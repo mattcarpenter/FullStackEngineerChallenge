@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.response.Response;
+import net.mattcarpenter.performancereview.constants.Constants;
 import net.mattcarpenter.performancereview.functionaltests.constants.TestConstants;
 import net.mattcarpenter.performancereview.functionaltests.helpers.EmployeeHelper;
 import net.mattcarpenter.performancereview.model.CreateEmployeeRequest;
@@ -16,15 +17,18 @@ import static org.hamcrest.Matchers.*;
 
 public class EmployeeTests {
 
+    private String adminToken;
+
     @BeforeClass
     public void before() {
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
+        adminToken = EmployeeHelper.getAdminToken();
     }
 
     @Test
     public void createEmployee_happyPath() {
         CreateEmployeeRequest randomEmployee = EmployeeHelper.makeRandomCreateEmployeeRequest();
-        Response response = EmployeeHelper.createTestEmployee(randomEmployee);
+        Response response = EmployeeHelper.createTestEmployee(randomEmployee, adminToken);
         assertNewEmployee(randomEmployee, response);
     }
 
@@ -32,11 +36,15 @@ public class EmployeeTests {
     public void getEmployee_happyPath() {
         // create test employee and grab id from response
         CreateEmployeeRequest randomEmployee = EmployeeHelper.makeRandomCreateEmployeeRequest();
-        Response createResponse = EmployeeHelper.createTestEmployee(randomEmployee);
+        Response createResponse = EmployeeHelper.createTestEmployee(randomEmployee, adminToken);
         EmployeeModel createdEmployee = createResponse.getBody().as(EmployeeModel.class);
 
+        // Log in employee to obtain a token
+        Response loginResponse = EmployeeHelper.loginTestEmployee(randomEmployee.getEmailAddress());
+        String jwt = loginResponse.getCookie(Constants.TOKEN_COOKIE_NAME);
+
         // get and validate
-        Response getResponse = EmployeeHelper.getEmployee(createdEmployee.getId());
+        Response getResponse = EmployeeHelper.getEmployee(createdEmployee.getId(), jwt);
         assertNewEmployee(randomEmployee, getResponse);
     }
 
@@ -44,7 +52,7 @@ public class EmployeeTests {
     public void updateEmployee_happyPath() {
         // create test employee and grab id from response
         CreateEmployeeRequest randomEmployee = EmployeeHelper.makeRandomCreateEmployeeRequest();
-        Response createResponse = EmployeeHelper.createTestEmployee(randomEmployee);
+        Response createResponse = EmployeeHelper.createTestEmployee(randomEmployee, adminToken);
         EmployeeModel createdEmployee = createResponse.getBody().as(EmployeeModel.class);
 
         // update employee
@@ -54,7 +62,7 @@ public class EmployeeTests {
                 .lastName(randomEmployee2.getLastName())
                 .emailAddress(randomEmployee2.getEmailAddress())
                 .build();
-        EmployeeHelper.updateEmployee(createdEmployee.getId(), updateEmployeeRequest).then().assertThat()
+        EmployeeHelper.updateEmployee(createdEmployee.getId(), updateEmployeeRequest, adminToken).then().assertThat()
                 .statusCode(200)
                 .body("firstName", equalTo(randomEmployee2.getFirstName()))
                 .body("lastName", equalTo(randomEmployee2.getLastName()))
@@ -74,13 +82,13 @@ public class EmployeeTests {
     @Test
     public void createEmployee_emailAlreadyExists() {
         CreateEmployeeRequest randomEmployee = EmployeeHelper.makeRandomCreateEmployeeRequest();
-        Response response = EmployeeHelper.createTestEmployee(randomEmployee);
+        Response response = EmployeeHelper.createTestEmployee(randomEmployee, adminToken);
         assertNewEmployee(randomEmployee, response);
 
         // attempt to create employee using same email address
         CreateEmployeeRequest randomEmployee2 = EmployeeHelper.makeRandomCreateEmployeeRequest();
         randomEmployee2.setEmailAddress(randomEmployee.getEmailAddress());
-        EmployeeHelper.createTestEmployee(randomEmployee2).then().assertThat()
+        EmployeeHelper.createTestEmployee(randomEmployee2, adminToken).then().assertThat()
                 .statusCode(400)
                 .body("code", equalTo(TestConstants.EMAIL_ALREADY_EXISTS));
     }

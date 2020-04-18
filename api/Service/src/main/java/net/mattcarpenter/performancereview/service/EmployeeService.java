@@ -12,6 +12,7 @@ import net.mattcarpenter.performancereview.mapper.ModelToEntityMapper;
 import net.mattcarpenter.performancereview.model.CredentialModel;
 import net.mattcarpenter.performancereview.model.Token;
 import net.mattcarpenter.performancereview.utils.Crypto;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -54,7 +55,12 @@ public class EmployeeService {
         return employeeEntity;
     }
 
-    public EmployeeEntity createEmployee(String firstName, String lastName, String emailAddress, String password) {
+    public EmployeeEntity createEmployee(String firstName, String lastName, String emailAddress, String password,
+                                         boolean isAdmin, Token token) {
+        if (!token.isAdmin()) {
+            throw new NotAuthorizedException(ErrorCode.AUTHORIZATION_INVALID_OR_EXPIRED_TOKEN);
+        }
+
         CredentialModel credentialModel = null;
 
         try {
@@ -74,6 +80,8 @@ public class EmployeeService {
         employeeEntity.setLastName(lastName);
         employeeEntity.setEmailAddress(emailAddress);
         employeeEntity.setActive(true);
+        employeeEntity.setAdmin(isAdmin);
+        employeeEntity.setCreatedBy(token.getEmployeeId());
         employeeDao.save(employeeEntity);
 
         // Create and store credential
@@ -84,7 +92,12 @@ public class EmployeeService {
         return employeeEntity;
     }
 
-    public EmployeeEntity updateEmployee(UUID employeeId, String firstName, String lastName, String emailAddress) {
+    public EmployeeEntity updateEmployee(UUID employeeId, String firstName, String lastName, String emailAddress,
+                                         Token token) {
+        if (!token.isAdmin()) {
+            throw new NotAuthorizedException(ErrorCode.AUTHORIZATION_INVALID_OR_EXPIRED_TOKEN);
+        }
+
         EmployeeEntity employeeEntity = employeeDao.findById(employeeId).orElseThrow();
 
         if (!StringUtils.isEmpty(firstName)) {
