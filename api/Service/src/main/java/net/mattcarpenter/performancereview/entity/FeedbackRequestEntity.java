@@ -41,4 +41,6 @@ public class FeedbackRequestEntity {
 
     private Date dueOn;
     private Date submittedOn;
+
+    private boolean isDeleted;
 }

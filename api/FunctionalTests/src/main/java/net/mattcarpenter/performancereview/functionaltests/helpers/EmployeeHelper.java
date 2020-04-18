@@ -11,6 +11,7 @@ import net.mattcarpenter.performancereview.functionaltests.utils.TestUtils;
 import net.mattcarpenter.performancereview.model.CreateEmployeeRequest;
 import net.mattcarpenter.performancereview.model.LoginRequest;
 import net.mattcarpenter.performancereview.model.UpdateEmployeeRequest;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.UUID;
 
@@ -22,7 +23,11 @@ public class EmployeeHelper {
     public static Response createTestEmployee(CreateEmployeeRequest request, String token) {
         RequestSpecification createEmployeeRequest = RestAssured.given();
         createEmployeeRequest.body(request);
-        createEmployeeRequest.cookie(Constants.TOKEN_COOKIE_NAME, token);
+
+        if (StringUtils.isNotEmpty(token)) {
+            createEmployeeRequest.cookie(Constants.TOKEN_COOKIE_NAME, token);
+        }
+
         createEmployeeRequest.contentType(ContentType.JSON);
         return createEmployeeRequest.post(TestUtils.makePath(TestConstants.V1_EMPLOYEE_CREATE));
     }

@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -30,6 +31,7 @@ public class PerformanceReviewEntity {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @Where(clause = "is_deleted is false")
     private Set<FeedbackRequestEntity> reviewFeedback = new HashSet<>();
 
     @CreationTimestamp

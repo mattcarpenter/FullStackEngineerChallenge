@@ -4,6 +4,7 @@ import net.mattcarpenter.performancereview.constants.Constants;
 import net.mattcarpenter.performancereview.model.Token;
 import net.mattcarpenter.performancereview.service.AuthService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -57,7 +58,9 @@ public class SecurityFilter extends OncePerRequestFilter {
             Token token = authService.validateJwt(jwt.trim());
             UsernamePasswordAuthenticationToken springSeurityToken =
                     new UsernamePasswordAuthenticationToken(token, null);
-            SecurityContextHolder.getContext().setAuthentication(springSeurityToken);
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(springSeurityToken);
+            SecurityContextHolder.setContext(context);
         }
 
         chain.doFilter(request, response);

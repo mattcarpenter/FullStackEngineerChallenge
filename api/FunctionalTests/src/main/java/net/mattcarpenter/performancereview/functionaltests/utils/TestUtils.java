@@ -1,5 +1,7 @@
 package net.mattcarpenter.performancereview.functionaltests.utils;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 public class TestUtils {
@@ -20,5 +22,11 @@ public class TestUtils {
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
+    }
+
+    public static Date getTomorrow() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        return calendar.getTime();
     }
 }

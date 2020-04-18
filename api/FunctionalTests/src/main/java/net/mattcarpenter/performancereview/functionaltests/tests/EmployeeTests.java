@@ -1,4 +1,4 @@
-package net.mattcarpenter.performancereview.functionaltests.tests.employee;
+package net.mattcarpenter.performancereview.functionaltests.tests;
 
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -31,6 +31,16 @@ public class EmployeeTests {
         Response response = EmployeeHelper.createTestEmployee(randomEmployee, adminToken);
         assertNewEmployee(randomEmployee, response);
     }
+
+    @Test
+    public void createEmployee_noToken() {
+        CreateEmployeeRequest randomEmployee = EmployeeHelper.makeRandomCreateEmployeeRequest();
+        EmployeeHelper.createTestEmployee(randomEmployee, null).then()
+                .body("code", equalTo(TestConstants.AUTHORIZATION_INVALID_OR_EXPIRED_TOKEN));
+    }
+
+    @Test(enabled = false)
+    public void createEmployee_nonAdminToken() {}
 
     @Test
     public void getEmployee_happyPath() {

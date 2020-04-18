@@ -4,10 +4,8 @@ import net.mattcarpenter.performancereview.entity.FeedbackRequestEntity;
 import net.mattcarpenter.performancereview.error.ErrorCode;
 import net.mattcarpenter.performancereview.exception.BadRequestException;
 import net.mattcarpenter.performancereview.mapper.EntityToModelMapper;
-import net.mattcarpenter.performancereview.model.CreateFeedbackRequestRequest;
-import net.mattcarpenter.performancereview.model.FeedbackRequestDetailsModel;
-import net.mattcarpenter.performancereview.model.FeedbackRequestSummaryModel;
-import net.mattcarpenter.performancereview.model.UpdateFeedbackRequestRequest;
+import net.mattcarpenter.performancereview.model.*;
+import net.mattcarpenter.performancereview.service.AuthService;
 import net.mattcarpenter.performancereview.service.FeedbackRequestService;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,22 +16,33 @@ import java.util.UUID;
 public class FeedbackRequestController {
 
     private FeedbackRequestService feedbackRequestService;
+    private AuthService authService;
 
-    public FeedbackRequestController(FeedbackRequestService feedbackRequestService) {
+    public FeedbackRequestController(FeedbackRequestService feedbackRequestService, AuthService authService) {
         this.feedbackRequestService = feedbackRequestService;
+        this.authService = authService;
     }
 
     @PostMapping
     public FeedbackRequestSummaryModel createFeedbackRequest(@RequestBody CreateFeedbackRequestRequest request) {
+        Token token = authService.loadTokenFromSecurityContext();
         FeedbackRequestEntity feedbackRequestEntity = feedbackRequestService.createFeedbackRequest(request.getReviewId(),
-                request.getReviewerEmployeeId(),
-                request.getDueOn(), request.getFeedbackRequestTemplateId());
+                request.getReviewerEmployeeId(), request.getDueOn(), request.getFeedbackRequestTemplateId(), token);
         return EntityToModelMapper.mapToFeedbackRequestSummaryModel(feedbackRequestEntity);
+    }
+
+    @DeleteMapping(value = "/{feedbackRequestId:.+}")
+    public FeedbackRequestDetailsModel deleteFeedbackRequest(@PathVariable UUID feedbackRequestId) {
+        Token token = authService.loadTokenFromSecurityContext();
+        FeedbackRequestEntity feedbackRequestEntity = feedbackRequestService.deactivateFeedbackRequest(feedbackRequestId, token);
+        return EntityToModelMapper.mapToFeedbackRequestDetailsModel(feedbackRequestEntity);
+
     }
 
     @GetMapping(value = "/{feedbackRequestId:.+}")
     public FeedbackRequestDetailsModel getFeedbackRequestDetails(@PathVariable UUID feedbackRequestId) {
-        FeedbackRequestEntity feedbackRequestEntity = feedbackRequestService.getFeedbackRequest(feedbackRequestId);
+        Token token = authService.loadTokenFromSecurityContext();
+        FeedbackRequestEntity feedbackRequestEntity = feedbackRequestService.getFeedbackRequest(feedbackRequestId, token);
         return EntityToModelMapper.mapToFeedbackRequestDetailsModel(feedbackRequestEntity);
     }
 
