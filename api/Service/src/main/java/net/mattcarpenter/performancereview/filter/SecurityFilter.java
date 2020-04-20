@@ -63,6 +63,8 @@ public class SecurityFilter extends OncePerRequestFilter {
             SecurityContextHolder.setContext(context);
         }
 
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+
         chain.doFilter(request, response);
     }
 }
