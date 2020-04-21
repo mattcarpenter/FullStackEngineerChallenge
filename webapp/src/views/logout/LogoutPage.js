@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Grid, Typography, CircularProgress} from '@material-ui/core';
+import { Grid, CircularProgress} from '@material-ui/core';
 import { logout } from '../../stores/user/UserActions';
 import { useDispatch } from 'react-redux';
 

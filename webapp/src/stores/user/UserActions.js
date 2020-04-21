@@ -23,7 +23,7 @@ export function login(emailAddress, password) {
       })
       .then(({data}) => {
         dispatch({ type: LOGIN_SUCCESS, payload: data});
-        dispatch(replace(routes.HOME));
+        dispatch(replace(data.admin ? routes.EMPLOYEES : routes.HOME));
       })
       .catch(({response : { data }}) => {
         toastr.error(data?.code === 'AUTHORIZATION_CREDENTIALS' ?

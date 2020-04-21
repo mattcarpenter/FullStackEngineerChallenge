@@ -18,13 +18,13 @@ function EmployeeDetailsForm(props) {
           <Field label="Last Name" name="lastName" component={renderTextField} />
         </Grid>
         <Grid item xs={12}>
-          <Field label="Email Address" name="emailAddress" component={renderTextField} />
+          <Field label="Email Address" name="emailAddress" autoComplete="disabled" component={renderTextField} />
         </Grid>
         <Grid item xs={12}>
-          <Field label={passwordLabel} name="password" component={renderPasswordField} />
+          <Field label={passwordLabel} name="password" autoComplete="disabled" component={renderPasswordField} />
         </Grid>
         <Grid item xs={12}>
-          <Field label="Confirm Password" name="confirmPassword" component={renderPasswordField} />
+          <Field label="Confirm Password" name="confirmPassword" autoComplete="disabled" component={renderPasswordField} />
         </Grid>
         <Grid item xs={12}>
           <Field label="Is Admin" name="admin" component={renderCheckbox} />

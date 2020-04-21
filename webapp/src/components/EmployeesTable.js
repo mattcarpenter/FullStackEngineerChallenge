@@ -1,16 +1,17 @@
 import React from 'react';
 import MUIDataTable from "mui-datatables";
 import { useSelector } from 'react-redux';
-import { Grid } from '@material-ui/core';
+import { Grid, withWidth } from '@material-ui/core';
 import faker from 'faker';
 
-export default function EmployeesTable(props) {
+export default withWidth()((props) => {
+  const nameCell = /xs/.test(props.width) ? SimpleNameCell : NameCell;
   const data = useSelector(state => state.employees.employees)
     .map(e => [ { lastName: e.lastName, firstName: e.firstName, emailAddress: e.emailAddress, employeeId: e.id }, e.department, e.supervisor ]);
   const nameCol = {
     name: 'Name',
     options: {
-      customBodyRender: function (parentProps) {  return NameCell({ ...parentProps, onEmployeeClick: props.onEmployeeClick })}
+      customBodyRender: function (parentProps) { return nameCell({ ...parentProps, onEmployeeClick: props.onEmployeeClick })}
     }
   };
   const columns = [nameCol, 'Department', 'Supervisor'];
@@ -27,6 +28,19 @@ export default function EmployeesTable(props) {
       options={options}
     />
   );
+});
+
+function SimpleNameCell(props) {
+  function handleClick(event) {
+    event.preventDefault();
+    (props.onEmployeeClick || function () {})(props.employeeId);
+  }
+
+  return (
+    <div>
+      <a href={`/employees/${props.employeeId}`} onClick={handleClick}>{ props.firstName } { props.lastName }</a>
+    </div>
+  )
 }
 
 function NameCell(props) {
@@ -54,7 +68,7 @@ function NameCell(props) {
             { props.firstName} { props.lastName}
           </div>
           <div>
-            <a href="#" onClick={handleClick}>
+            <a href={`/employees/${props.employeeId}`} onClick={handleClick}>
               { props.emailAddress }
             </a>
           </div>
@@ -63,3 +77,4 @@ function NameCell(props) {
     </div>
   );
 }
+
