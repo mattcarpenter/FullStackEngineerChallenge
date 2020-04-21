@@ -19,7 +19,7 @@ $ docker-compose up
 > If you restart the API, any token cookies remaining in your browser will no longer validate. You'll need to visit the login page again or clear your localStorage.
 
 ## API Documentation
-After starting the service, you may view the Swagger API docs here: [http://localhost:8080/api/v1/swagger-docs.html](http://localhost:8080/api/v1/swagger-docs.html)
+After starting the service, you may view the Swagger API docs here: [http://localhost:8080/api/v1/swagger-ui.html](http://localhost:8080/api/v1/swagger-ui.html)
 
 ## Overview of Technologies Used
 
