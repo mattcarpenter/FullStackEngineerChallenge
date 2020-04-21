@@ -50,7 +50,7 @@ The following gap analysis table highlights the gaps in the original requirement
 | Requirement | Gap | Decision |
 |-|-|-|
 |Delete Employees|The requirement does imply any particular data retention policies|Upon deletion, a delete flag will be set on the employee record in the database. The record will remain for auditing purposes and any feedback requests for the deactivated employee will remain open.
-|View Employees|Employee attributes are not specified (i.e. what does a user view?)|First name, last name, and an email address will be stored.|
+|View Employees|Employee attributes are not specified (i.e. what does a user view?)|First name, last name, and an email address will be required and stored.|
 |Add Performance Review|Does not specify the attributes of a performance review.|Performance review will not have a due date (however, feedback requests assigned to employees will.) Performance reviews will simply contain a memo (e.g.: "Alice's EOY review")|
 |Assign employees to participate in anothe employee's performance review|There are no requirements or user stories describing what "participation" means|Admin will create feedback requests for a performance review. Feedback requests have an assignee, due date, and a pre-defined, named questionnaire (e.g.: peer feedback, leader feedback, 360 feedback) consisting of freeform text inputs and multiple choice questions. Templates and questions are stored in the database.|
 |Submit feedback|Due date? What defines "feedback"? Assuming freeform text can be inputted, are there length requirements?|Due date will be specified when an admin creates a feedback request on a performance review. Questions come from a pre-defined questionare in the database, of which many can exist. There will be no length requirements on freeform text feedback.
@@ -65,3 +65,6 @@ The following gap analysis table highlights the gaps in the original requirement
 * Authentication is password-based. Employees will log in using their email address and a password.
 * Web application should be responsive.
 * Application does not need to be operationalized for the purposes of this challenge. Infrastructure as Code, build and delivery pipeline design, robust database migrations, etc... are out of scope.
+  * Docker Compose is used simply to make the demo easy to run.
+  * UI container serves a development build of the front-end using Webpack Dev Server
+
