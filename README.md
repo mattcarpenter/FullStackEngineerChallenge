@@ -8,9 +8,7 @@
   
 ```
 $ git clone https://github.com/mattcarpenter/FullStackEngineeringChallenge.git
-
 $ cd FullStackEngineerChallenge
-
 $ docker-compose up
 ```
 
@@ -29,7 +27,6 @@ After starting the service, you may view the Swagger API docs here: [http://loca
 
 * React / Redux
 * MaterialUI
-* Jest
 
 ### Backend
 
