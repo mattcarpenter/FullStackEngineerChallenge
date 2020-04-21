@@ -18,5 +18,8 @@ public class EmployeeModel {
     private String lastName;
     private String emailAddress;
     private UUID id;
+
+    private boolean isAdmin;
     private List<FeedbackRequestSummaryModel> feedbackRequests;
+    private List<PerformanceReviewModel> performanceReviews;
 }

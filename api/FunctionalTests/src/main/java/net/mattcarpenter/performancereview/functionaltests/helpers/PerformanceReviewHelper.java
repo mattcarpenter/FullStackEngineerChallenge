@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public class PerformanceReviewHelper {
     public static Response createPerformanceReview(UUID revieweeEmployeeId, String token) {
-        CreatePerformanceReviewRequest requestBody = new CreatePerformanceReviewRequest(revieweeEmployeeId);
+        CreatePerformanceReviewRequest requestBody = new CreatePerformanceReviewRequest(revieweeEmployeeId, "memo");
         RequestSpecification request = RestAssured.given();
         request.body(requestBody);
         request.contentType(ContentType.JSON);

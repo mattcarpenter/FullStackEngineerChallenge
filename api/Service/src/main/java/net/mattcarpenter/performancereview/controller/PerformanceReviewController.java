@@ -27,7 +27,7 @@ public class PerformanceReviewController {
     @PostMapping
     public PerformanceReviewModel createPerformanceReview(@RequestBody @Valid CreatePerformanceReviewRequest request) {
         Token token = authService.loadTokenFromSecurityContext();
-        PerformanceReviewEntity entity = performanceReviewService.createReview(request.getReviewee(), token);
+        PerformanceReviewEntity entity = performanceReviewService.createReview(request.getReviewee(), request.getMemo(), token);
         return EntityToModelMapper.mapToReviewModel(entity);
     }
 

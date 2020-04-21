@@ -17,4 +17,13 @@ public class CookieUtils {
         cookie.setPath(TOKEN_COOKIE_PATH);
         return cookie;
     }
+
+    public static Cookie createExpiredCookie() {
+        Cookie cookie = new Cookie(Constants.TOKEN_COOKIE_NAME, null);
+        cookie.setPath("/");
+        //cookie.setSecure(true); // todo - enable once tls is implemented
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+        return cookie;
+    }
 }

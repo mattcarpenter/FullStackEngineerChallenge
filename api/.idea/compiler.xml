@@ -15,7 +15,7 @@
       <module name="performancereview-commons" target="1.8" />
       <module name="performancereview-functional-tests" target="1.8" />
       <module name="performancereview-parent" target="1.8" />
-      <module name="performancereview-service" target="10" />
+      <module name="performancereview-service" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

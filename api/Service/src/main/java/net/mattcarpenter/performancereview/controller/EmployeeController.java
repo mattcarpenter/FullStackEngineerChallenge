@@ -51,7 +51,7 @@ public class EmployeeController {
     public EmployeeModel updateEmployee(@PathVariable UUID employeeId, @RequestBody UpdateEmployeeRequest request) {
         Token token = authService.loadTokenFromSecurityContext();
         EmployeeEntity entity = employeeService.updateEmployee(employeeId, request.getFirstName(), request.getLastName(),
-                request.getEmailAddress(), token);
+                request.getEmailAddress(), request.isAdmin(), token);
         return EntityToModelMapper.mapToEmployeeModel(entity);
     }
 

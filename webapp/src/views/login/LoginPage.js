@@ -1,38 +1,11 @@
-import React, { useState } from 'react';
+import { Button, Card, CardContent, CircularProgress, Grid, TextField, Typography, withWidth } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
-import { Card, CardContent, Typography, TextField, Grid, Button, withWidth } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { login } from '../../stores/user/UserActions';
-import { CircularProgress } from '@material-ui/core'
-import { LOGIN } from '../../stores/user/UserActions';
+import { login, LOGIN } from '../../stores/user/UserActions';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    [theme.breakpoints.down('xs')]: {
-      padding: 0
-    }
-  },
-  card: {
-    [theme.breakpoints.up('sm')]: {
-      marginTop: theme.spacing(8),
-      padding: theme.spacing(2)
-    }
-  },
-  title: {
-    fontWeight: 'bold',
-    marginBottom: theme.spacing(4)
-  },
-  button: {
-    [theme.breakpoints.down('xs')]: {
-      marginTop: theme.spacing(3),
-      marginBottom: theme.spacing(2)
-    }
-  },
-  spinner: {
-    marginRight: theme.spacing(1)
-  }
-}));
+export default withWidth()(LoginPage);
 
 function LoginPage(props) {
   const classes = useStyles();
@@ -40,8 +13,18 @@ function LoginPage(props) {
   const dispatch = useDispatch();
   const isLoggingIn = useSelector(state => !!state.loading[LOGIN]);
 
-  const [EmailAddress, setEmailAddress] = useState('');
+  const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
+
+  const dispatchLogin = () => {
+    dispatch(login(emailAddress, password));
+  }
+
+  const handleKeypress = event => {
+    if (event.key === 'Enter') {
+      dispatchLogin();
+    }
+  }
   
   return (
     <Container maxWidth="sm" className={classes.root}>
@@ -56,6 +39,7 @@ function LoginPage(props) {
             type="email"
             margin="normal"
             disabled={isLoggingIn}
+            onKeyPress={handleKeypress}
             onChange={(e)=>setEmailAddress(e.target.value)}
             fullWidth
             autoFocus
@@ -65,6 +49,7 @@ function LoginPage(props) {
             label="Password"
             type="password"
             margin="normal"
+            onKeyPress={handleKeypress}
             disabled={isLoggingIn}
             onChange={(e)=>setPassword(e.target.value)}
             fullWidth
@@ -78,7 +63,7 @@ function LoginPage(props) {
               fullWidth={isSmall}
               variant="outlined"
               color="primary"
-              onClick={() => dispatch(login(EmailAddress, password))}
+              onClick={dispatchLogin}
               style={{ textTransform: "none" }}>
                 { isLoggingIn && <CircularProgress size={20} className={classes.spinner} />}
                 Sign In
@@ -93,4 +78,31 @@ function LoginPage(props) {
   );
 }
 
-export default withWidth()(LoginPage);
+function useStyles() {
+  return makeStyles((theme) => ({
+    root: {
+      [theme.breakpoints.down('xs')]: {
+        padding: 0
+      }
+    },
+    card: {
+      [theme.breakpoints.up('sm')]: {
+        marginTop: theme.spacing(8),
+        padding: theme.spacing(2)
+      }
+    },
+    title: {
+      fontWeight: 'bold',
+      marginBottom: theme.spacing(4)
+    },
+    button: {
+      [theme.breakpoints.down('xs')]: {
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(2)
+      }
+    },
+    spinner: {
+      marginRight: theme.spacing(1)
+    }
+  }))();
+}

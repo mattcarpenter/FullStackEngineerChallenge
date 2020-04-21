@@ -8,7 +8,7 @@ export function getUserFromPersistentStorage() {
   }
 }
 
-export function persistAuthChanges(store) {
+export function connectStoreToLocalStorage(store) {
   let currentUser = null;
   function handleLocalStorageUserChange() {
     let previousUser = currentUser;

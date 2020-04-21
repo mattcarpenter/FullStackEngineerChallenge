@@ -13,6 +13,8 @@ public class UpdateEmployeeRequest {
 
     private String lastName;
 
+    private boolean isAdmin;
+
     @Email
     private String emailAddress;
 }

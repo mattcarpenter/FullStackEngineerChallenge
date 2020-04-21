@@ -1,55 +1,83 @@
+import { Checkbox, FormControlLabel, TextField, withWidth, Grid } from '@material-ui/core';
 import React from 'react';
-import { reduxForm, Field } from 'redux-form'
-import { TextField, FormControlLabel, Checkbox } from '@material-ui/core';
-import { submitUpdate, submitCreate } from './submit';
 import { connect } from 'react-redux';
+import { Field, reduxForm } from 'redux-form';
+import { submitCreate, submitUpdate } from './submit';
 
-const renderTextField = ({
-  label,
-  input,
-  meta: { touched, invalid, error },
-  ...custom
-}) => (
-  <TextField
-    label={label}
-    placeholder={label}
-    error={touched && invalid}
-    helperText={touched && error}
-    {...input}
-    {...custom}
-  />
-)
+function EmployeeDetailsForm(props) { 
+  const fullScreen = /xs/.test(props.width);
 
-const renderPasswordField = ({
-  label,
-  input,
-  meta: { touched, invalid, error },
-  ...custom
-}) => (
-  <TextField
-    label={label}
-    type="password"
-    placeholder={label}
-    error={touched && invalid}
-    helperText={touched && error}
-    {...input}
-    {...custom}
-  />
-)
+  const passwordLabel = props.form === 'updateEmployeeForm' ? 'New Password' : 'Password';
+  return (
+    <form onSubmit={props.handleSubmit} style={{ width: fullScreen ? 'auto' : 500 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Field label="First Name" name="firstName" component={renderTextField} />
+        </Grid>
+        <Grid item xs={12}>
+          <Field label="Last Name" name="lastName" component={renderTextField} />
+        </Grid>
+        <Grid item xs={12}>
+          <Field label="Email Address" name="emailAddress" component={renderTextField} />
+        </Grid>
+        <Grid item xs={12}>
+          <Field label={passwordLabel} name="password" component={renderPasswordField} />
+        </Grid>
+        <Grid item xs={12}>
+          <Field label="Confirm Password" name="confirmPassword" component={renderPasswordField} />
+        </Grid>
+        <Grid item xs={12}>
+          <Field label="Is Admin" name="admin" component={renderCheckbox} />
+        </Grid>
+      </Grid>
+    </form>
+  )
+}
 
-const renderCheckbox = ({ input, label }) => (
-  <div>
-    <FormControlLabel
-      control={
-        <Checkbox
-          checked={input.value ? true : false}
-          onChange={input.onChange}
-        />
-      }
+function renderTextField({label, input, meta: { touched, invalid, error }, ...custom}) {
+  return (
+    <TextField
+      fullWidth={true}
       label={label}
+      placeholder={label}
+      error={touched && invalid}
+      helperText={touched && error}
+      {...input}
+      {...custom}
     />
-  </div>
-)
+  );
+}
+
+function renderPasswordField({label, input, meta: { touched, invalid, error }, ...custom}) {
+  return (
+    <TextField
+      fullWidth={true}
+      label={label}
+      type="password"
+      placeholder={label}
+      error={touched && invalid}
+      helperText={touched && error}
+      {...input}
+      {...custom}
+    />
+  );
+}
+
+function renderCheckbox({ input, label }) {
+  return (
+    <div>
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={input.value ? true : false}
+            onChange={input.onChange}
+          />
+        }
+        label={label}
+      />
+    </div>
+  );
+}
 
 function makeValidator(context) {
   return values => {
@@ -81,37 +109,11 @@ function makeValidator(context) {
   }
 }
 
-function EmployeeDetailsForm(props) { 
-  const passwordLabel = props.form === 'updateEmployeeForm' ? 'New Password' : 'Password';
-  return (
-    <form onSubmit={props.handleSubmit}>
-      <div>
-        <Field label="First Name" name="firstName" component={renderTextField} />
-      </div>
-      <div>
-        <Field label="Last Name" name="lastName" component={renderTextField} />
-      </div>
-      <div>
-        <Field label="Email Address" name="emailAddress" component={renderTextField} />
-      </div>
-      <div>
-        <Field label={passwordLabel} name="password" component={renderPasswordField} />
-      </div>
-      <div>
-        <Field label="Confirm Password" name="confirmPassword" component={renderPasswordField} />
-      </div>
-      <div>
-        <Field label="Is Admin" name="isAdmin" component={renderCheckbox} />
-      </div>
-    </form>
-  )
-}
-
 export const EmployeeDetailsFormCreate = reduxForm({
   form: 'createEmployeeForm',
   onSubmit: submitCreate,
   validate: makeValidator('create')
-})(EmployeeDetailsForm)
+})(withWidth()(EmployeeDetailsForm));
 
 const InitializeFromStateUpdateForm = reduxForm({
   form: 'updateEmployeeForm',
@@ -123,4 +125,4 @@ export const EmployeeDetailsFormUpdate = connect(
   state => ({
     initialValues: state.employees.current
   })
-)(InitializeFromStateUpdateForm);
+)(withWidth()(InitializeFromStateUpdateForm));

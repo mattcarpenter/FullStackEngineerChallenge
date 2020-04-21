@@ -14,4 +14,7 @@ public class CreatePerformanceReviewRequest {
 
     @NotNull
     private UUID reviewee;
+
+    @NotNull
+    private String memo;
 }

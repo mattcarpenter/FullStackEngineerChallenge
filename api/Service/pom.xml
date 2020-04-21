@@ -9,7 +9,7 @@
     </parent>
     <groupId>net.mattcarpenter.performancereview</groupId>
     <artifactId>performancereview-service</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <description>Performance Review Feedback Application</description>
 
     <properties>
@@ -44,17 +44,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -95,8 +84,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>10</source>
-                    <target>10</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
         </plugins>

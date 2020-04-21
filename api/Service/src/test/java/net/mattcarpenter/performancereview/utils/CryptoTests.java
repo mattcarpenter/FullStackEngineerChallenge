@@ -1,11 +1,10 @@
 package net.mattcarpenter.performancereview.utils;
 
 import net.mattcarpenter.performancereview.model.CredentialModel;
-import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.*;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.testng.annotations.Test;
 
-@SpringBootTest
+import static org.assertj.core.api.Assertions.*;
+
 public class CryptoTests {
 
     private static final String TEST_PASSWORD_1 = "tastycakes";

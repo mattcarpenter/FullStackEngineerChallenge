@@ -24,7 +24,7 @@ public class PerformanceReviewService {
         this.employeeDao = employeeDao;
     }
 
-    public PerformanceReviewEntity createReview(UUID revieweeId, Token token) {
+    public PerformanceReviewEntity createReview(UUID revieweeId, String memo, Token token) {
         if (!token.isAdmin()) {
             throw new NotAuthorizedException(ErrorCode.AUTHORIZATION_INVALID_OR_EXPIRED_TOKEN);
         }
@@ -32,6 +32,7 @@ public class PerformanceReviewService {
         EmployeeEntity employeeEntity = employeeDao.findById(revieweeId).orElseThrow();
         PerformanceReviewEntity performanceReviewEntity = new PerformanceReviewEntity();
         performanceReviewEntity.setRevieweeEmployee(employeeEntity);
+        performanceReviewEntity.setMemo(memo);
         performanceReviewDao.save(performanceReviewEntity);
         return performanceReviewEntity;
     }

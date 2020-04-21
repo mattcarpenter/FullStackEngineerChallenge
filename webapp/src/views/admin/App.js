@@ -1,63 +1,35 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import MailIcon from '@material-ui/icons/Mail';
-import MenuIcon from '@material-ui/icons/Menu';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import RouteEnum from '../../constants/RouteEnum';
-import { Switch } from 'react-router-dom';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import MenuIcon from '@material-ui/icons/Menu';
+import PeopleIcon from '@material-ui/icons/People';
+import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
+import { push, replace } from 'connected-react-router';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { toastr } from 'react-redux-toastr';
+import { Switch, useLocation } from 'react-router-dom';
 import LoginRequiredRoute from '../../components/LoginRequiredRoute';
-import EmployeesPage from './EmployeesPage';
+import * as Routes from '../../constants/Routes';
+import * as routes from '../../constants/Routes';
 import EmployeeDetailsPage from './EmployeeDetailsPage';
+import EmployeesPage from './EmployeesPage';
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  drawer: {
-    [theme.breakpoints.up('sm')]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-  },
-  appBar: {
-    [theme.breakpoints.up('sm')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-    },
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
-    },
-  },
-  // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-  },
-}));
-
-function App(props) {
+export default function App(props) {
   const { container } = props;
+  const dispatch = useDispatch();
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -66,26 +38,28 @@ function App(props) {
     setMobileOpen(!mobileOpen);
   };
 
+  // there's currently nothing at the root. redirect to another route if necessary
+  if (useLocation().pathname === '/') {
+    dispatch(replace(routes.EMPLOYEES));
+  }
+
   const drawer = (
     <div>
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        <ListItem button onClick={() => dispatch(push(routes.EMPLOYEES))}>
+          <ListItemIcon><PeopleIcon /></ListItemIcon><ListItemText>Employees</ListItemText>
+        </ListItem>
+        <ListItem button onClick={() => toastr.warning('Not implemented')}>
+          <ListItemIcon><QuestionAnswerIcon /></ListItemIcon><ListItemText>Reviews</ListItemText>
+        </ListItem>
       </List>
       <Divider />
       <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+      <ListItem button onClick={() => dispatch(replace(routes.LOGOUT))}>
+          <ListItemIcon><ExitToAppIcon /></ListItemIcon><ListItemText>Log out</ListItemText>
+        </ListItem>
       </List>
     </div>
   );
@@ -104,7 +78,7 @@ function App(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Responsive drawer
+            Employee Performance Reviews
           </Typography>
         </Toolbar>
       </AppBar>
@@ -142,20 +116,45 @@ function App(props) {
       <main className={classes.content}>
         <div className={classes.toolbar} />
         <Switch>
-          <LoginRequiredRoute path={RouteEnum.EmployeeDetails} component={EmployeeDetailsPage} />
-          <LoginRequiredRoute path={RouteEnum.Employees} component={EmployeesPage} />
+          <LoginRequiredRoute path={Routes.EMPLOYEE_DETAILS} component={EmployeeDetailsPage} />
+          <LoginRequiredRoute path={Routes.EMPLOYEES} component={EmployeesPage} />
         </Switch>
       </main>
     </div>
   );
 }
 
-App.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  container: PropTypes.any,
-};
-
-export default App;
+function useStyles() {
+  return makeStyles((theme) => ({
+    root: {
+      display: 'flex',
+    },
+    drawer: {
+      [theme.breakpoints.up('sm')]: {
+        width: drawerWidth,
+        flexShrink: 0,
+      },
+    },
+    appBar: {
+      [theme.breakpoints.up('sm')]: {
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: drawerWidth,
+      },
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+      [theme.breakpoints.up('sm')]: {
+        display: 'none',
+      },
+    },
+    // necessary for content to be below app bar
+    toolbar: theme.mixins.toolbar,
+    drawerPaper: {
+      width: drawerWidth,
+    },
+    content: {
+      flexGrow: 1,
+      padding: theme.spacing(3),
+    },
+  }))();
+}

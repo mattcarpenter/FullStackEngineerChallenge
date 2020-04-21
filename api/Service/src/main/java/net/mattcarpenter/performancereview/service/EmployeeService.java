@@ -93,7 +93,7 @@ public class EmployeeService {
     }
 
     public EmployeeEntity updateEmployee(UUID employeeId, String firstName, String lastName, String emailAddress,
-                                         Token token) {
+                                         Boolean isAdmin, Token token) {
         if (!token.isAdmin()) {
             throw new NotAuthorizedException(ErrorCode.AUTHORIZATION_INVALID_OR_EXPIRED_TOKEN);
         }
@@ -106,6 +106,10 @@ public class EmployeeService {
 
         if (!StringUtils.isEmpty(lastName)) {
             employeeEntity.setLastName(lastName);
+        }
+
+        if (isAdmin != null) {
+            employeeEntity.setAdmin(isAdmin);
         }
 
         if (!StringUtils.isEmpty(emailAddress)) {

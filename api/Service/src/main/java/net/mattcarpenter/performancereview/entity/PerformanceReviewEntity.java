@@ -42,4 +42,6 @@ public class PerformanceReviewEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     private EmployeeEntity createdBy;
+
+    private String memo;
 }

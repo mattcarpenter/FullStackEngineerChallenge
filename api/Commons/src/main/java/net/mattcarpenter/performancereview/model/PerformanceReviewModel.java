@@ -1,5 +1,6 @@
 package net.mattcarpenter.performancereview.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,4 +20,5 @@ public class PerformanceReviewModel {
     private UUID createdByEmployeeId;
     private Date createdAt;
     private List<FeedbackRequestSummaryModel> feedbackRequests;
+    private String memo;
 }

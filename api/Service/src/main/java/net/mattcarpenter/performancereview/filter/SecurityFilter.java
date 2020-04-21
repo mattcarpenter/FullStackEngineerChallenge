@@ -30,6 +30,14 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+        String path = request.getRequestURI();
+
+        // todo - can we leverage spring security to move some of this filter's logic into a more appropriate place?
+        if ("/api/v1/auth/login".equals(path) || "/api/v1/auth/logout".equals(path)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         String jwt = null;
 
         // accept access token from either a header or a cookie
@@ -62,8 +70,6 @@ public class SecurityFilter extends OncePerRequestFilter {
             context.setAuthentication(springSeurityToken);
             SecurityContextHolder.setContext(context);
         }
-
-        response.setHeader("Access-Control-Allow-Credentials", "true");
 
         chain.doFilter(request, response);
     }

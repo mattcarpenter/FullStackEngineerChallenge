@@ -1,28 +1,21 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllEmployees } from '../../stores/employees/EmployeesActions';
-import { CREATE_EMPLOYEE_MODAL } from '../../constants/Modals';
-import { Grid, Button, withWidth } from '@material-ui/core';
-import EmployeesTable from '../../components/EmployeesTable';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import { makeStyles } from '@material-ui/core/styles';
+import { Button, Grid, withWidth } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { EmployeeDetailsFormCreate } from '../../components/EmployeeDetailsForm/index';
-import { submit } from 'redux-form'
-import { showModal, hideModal } from '../../stores/modals/ModalsActions';
+import { makeStyles } from '@material-ui/core/styles';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import { push } from 'connected-react-router';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { submit } from 'redux-form';
+import { EmployeeDetailsFormCreate } from '../../components/EmployeeDetailsForm/index';
+import EmployeesTable from '../../components/EmployeesTable';
+import { CREATE_EMPLOYEE_MODAL } from '../../constants/Modals';
+import { getAllEmployees } from '../../stores/employees/EmployeesActions';
+import { hideModal, showModal } from '../../stores/modals/ModalsActions';
 
-const useStyles = makeStyles((theme) => ({
-  actions: {
-      marginBottom: theme.spacing(2)
-  },
-  addIcon: {
-    marginRight: theme.spacing(1)
-  }
-}));
+export default withWidth()(EmployeesPage);
 
 function EmployeesPage(props) {
   const dispatch = useDispatch();
@@ -34,7 +27,9 @@ function EmployeesPage(props) {
     dispatch(push('/employees/' + employeeId));
   }
 
-  dispatch(getAllEmployees());
+  useEffect(() => {
+    dispatch(getAllEmployees());
+  }, [dispatch]);
 
   return (
     <div>
@@ -46,6 +41,12 @@ function EmployeesPage(props) {
         </Grid>
       </Grid>
       <EmployeesTable onEmployeeClick={handleEmployeeClick} />
+      { CreateEmployeeDialog() }
+    </div>
+  );
+
+  function CreateEmployeeDialog() {
+    return (
       <Dialog
         fullScreen={fullScreen}
         open={showCreateEmployeeModal}
@@ -63,9 +64,18 @@ function EmployeesPage(props) {
               Create
             </Button>
           </DialogActions>
-        </Dialog>
-    </div>
-  );
+      </Dialog>
+    );
+  }
 }
 
-export default withWidth()(EmployeesPage);
+function useStyles() {
+  return makeStyles((theme) => ({
+    actions: {
+        marginBottom: theme.spacing(2)
+    },
+    addIcon: {
+      marginRight: theme.spacing(1)
+    }
+  }))();
+}

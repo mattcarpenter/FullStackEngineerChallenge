@@ -15,12 +15,18 @@ public class EntityToModelMapper {
                 .map(EntityToModelMapper::mapToFeedbackRequestSummaryModel)
                 .collect(Collectors.toList());
 
+        List<PerformanceReviewModel> performanceReviews = entity.getReviews().stream()
+                .map(EntityToModelMapper::mapToReviewModel)
+                .collect(Collectors.toList());
+
         return EmployeeModel.builder()
                 .firstName(entity.getFirstName())
                 .lastName(entity.getLastName())
                 .emailAddress(entity.getEmailAddress())
                 .id(entity.getId())
+                .isAdmin(entity.isAdmin())
                 .feedbackRequests(feedbackRequests)
+                .performanceReviews(performanceReviews)
                 .build();
     }
 
@@ -32,6 +38,7 @@ public class EntityToModelMapper {
 
         return PerformanceReviewModel.builder()
                 .id(entity.getId())
+                .memo(entity.getMemo())
                 .revieweeEmployeeId(entity.getRevieweeEmployee().getId())
                 .createdAt(entity.getCreatedAt())
                 .feedbackRequests(feedbackRequests)

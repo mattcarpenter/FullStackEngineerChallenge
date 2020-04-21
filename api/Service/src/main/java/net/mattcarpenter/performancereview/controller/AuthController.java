@@ -40,4 +40,9 @@ public class AuthController {
 
         return EntityToModelMapper.mapToEmployeeModel(entity);
     }
+
+    @PostMapping(value = "/logout")
+    public void logout(HttpServletResponse response) {
+        response.addCookie(CookieUtils.createExpiredCookie());
+    }
 }
