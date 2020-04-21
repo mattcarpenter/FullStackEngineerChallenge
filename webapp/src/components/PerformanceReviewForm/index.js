@@ -1,15 +1,19 @@
 import { submitCreate } from './submit';
-import { TextField } from '@material-ui/core';
+import { TextField, Grid, withWidth } from '@material-ui/core';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form'
 
 function PerformanceReviewForm(props) { 
+  const fullScreen = /xs/.test(props.width);
+
   return (
-    <form onSubmit={props.handleSubmit}>
-      <div>
-        <Field label="Memo" name="memo" component={renderTextField} />
-      </div>
+    <form onSubmit={props.handleSubmit} style={{ width: fullScreen ? 'auto' : 500 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Field label="Memo" name="memo" component={renderTextField} />
+        </Grid>
+      </Grid>
     </form>
   )
 }
@@ -17,6 +21,7 @@ function PerformanceReviewForm(props) {
 function renderTextField({label, input, meta: { touched, invalid, error }, ...custom}) {
   return (
     <TextField
+      fullWidth={true}
       label={label}
       placeholder={label}
       error={touched && invalid}
@@ -35,13 +40,13 @@ export const PerformanceReviewFormCreate = reduxForm({
   form: 'createPerformanceReviewForm',
   onSubmit: submitCreate,
   validate: validator
-})(PerformanceReviewForm)
+})(withWidth()(PerformanceReviewForm));
 
 const InitializeFromStateUpdateForm = reduxForm({
   form: 'updatePerformanceReviewForm',
   onSubmit: function noop() {},
   validate: validator
-})(PerformanceReviewForm)
+})(withWidth()(PerformanceReviewForm));
 
 export const PerformanceReviewFormUpdate = connect(
   state => ({

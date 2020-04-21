@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, TextField, withWidth, Grid } from '@material-ui/core';
+import { Checkbox, FormControlLabel, Grid, TextField, withWidth } from '@material-ui/core';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
