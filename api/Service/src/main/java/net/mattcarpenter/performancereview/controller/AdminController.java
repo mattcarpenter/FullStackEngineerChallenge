@@ -1,5 +1,6 @@
 package net.mattcarpenter.performancereview.controller;
 
+import io.swagger.annotations.Api;
 import net.mattcarpenter.performancereview.entity.EmployeeEntity;
 import net.mattcarpenter.performancereview.mapper.EntityToModelMapper;
 import net.mattcarpenter.performancereview.model.*;
@@ -22,6 +23,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/admin")
+@Api(description = "Administrative endpoints used by automated functional tests only. To reduce scope, no authentication strategy has been implemented on these endpoints.")
 public class AdminController {
 
     EmployeeService employeeService;

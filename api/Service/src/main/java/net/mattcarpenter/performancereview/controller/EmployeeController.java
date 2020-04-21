@@ -5,7 +5,6 @@ import net.mattcarpenter.performancereview.mapper.EntityToModelMapper;
 import net.mattcarpenter.performancereview.model.*;
 import net.mattcarpenter.performancereview.service.AuthService;
 import net.mattcarpenter.performancereview.service.EmployeeService;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
