@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:latest
+    ports:
+      - 5433:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=performancereview
+  api:
+    build:
+      context: api/
+      dockerfile: Dockerfile
+    environment:
+      - spring.datasource.url=jdbc:postgresql://db:5432/performancereview
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+  webapp:
+    build:
+      context: webapp/
+      dockerfile: Dockerfile
+    ports:
+      - 3080:3000
+    depends_on:
+      - db
+      - api

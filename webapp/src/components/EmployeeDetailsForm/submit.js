@@ -5,6 +5,7 @@ import { CREATE_EMPLOYEE_MODAL, UPDATE_EMPLOYEE_MODAL } from '../../constants/Mo
 import { GET_EMPLOYEE_SUCCESS } from '../../stores/employees/EmployeesActions';
 import { hideModal } from '../../stores/modals/ModalsActions';
 import { toastr } from 'react-redux-toastr';
+import { getAllEmployees } from "../../stores/employees/EmployeesActions";
 
 export function submitUpdate(values, dispatch) {
   const payload = {
@@ -45,6 +46,7 @@ export function submitCreate(values, dispatch) {
       .post('/api/v1/employees/', values)
       .then(({data}) => {
         dispatch(hideModal(CREATE_EMPLOYEE_MODAL));
+        dispatch(getAllEmployees());
         toastr.success('Creation successful');
       }).catch(({response : { data }}) => {
         if (data.code === EMAIL_ALREADY_EXISTS) {

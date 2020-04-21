@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface EmployeeDao extends CrudRepository<EmployeeEntity, UUID> {
     boolean existsByEmailAddress(String emailAddress);
     EmployeeEntity findByEmailAddress(String emailAddress);
+    long countAllBy();
 }
